@@ -2,8 +2,7 @@
 % Please edit documentation in R/vamf.R
 \name{vamf}
 \alias{vamf}
-\title{Varying-Censoring Aware Matrix Factorization
-VAMF is a probabilistic dimension reduction method intended for single cell RNA-Seq datasets.}
+\title{Varying-Censoring Aware Matrix Factorization.}
 \usage{
 vamf(Y, L, nrestarts = 4, log2trans = TRUE, pseudocount = 0,
   output_samples = 100, save_restarts = FALSE, svmult = 1)
@@ -29,6 +28,5 @@ vamf(Y, L, nrestarts = 4, log2trans = TRUE, pseudocount = 0,
 List of posterior means of all model parameters. The 'factors' and 'loadings' are analogous to PCA. Cell positions in latent space can be plotted by using the 'factors' matrix.
 }
 \description{
-Varying-Censoring Aware Matrix Factorization
 VAMF is a probabilistic dimension reduction method intended for single cell RNA-Seq datasets.
 }

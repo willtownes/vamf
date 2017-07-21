@@ -2,8 +2,7 @@
 % Please edit documentation in R/vamf.R
 \name{extract_factors}
 \alias{extract_factors}
-\title{Extract latent factors from a Stan model fit.
-Extracts out the posterior means of the latent factors and all other parameter values from a Stan model fit.}
+\title{Extract latent factors from a Stan model fit.}
 \usage{
 extract_factors(stan_vb_fit, ss)
 }
@@ -16,6 +15,5 @@ extract_factors(stan_vb_fit, ss)
 List of posterior means of all model parameters.
 }
 \description{
-Extract latent factors from a Stan model fit.
 Extracts out the posterior means of the latent factors and all other parameter values from a Stan model fit.
 }

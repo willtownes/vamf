@@ -17,4 +17,4 @@ in one of your .R files (e.g., see rstanarm's 'rstanarm-package.R' file).
 * You can put into inst/chunks/common_functions.stan any function that is needed by any .stan file,
 in which case any .stan file can have #include 'common_functions.stan' in its functions block.
 * The precompiled stanmodel objects will appear in a named list called 'stanmodels'.
-* The 'cleanup' and 'cleanup.win' scripts in the root of the directory must be made executable.
+* [DONE] The 'cleanup' and 'cleanup.win' scripts in the root of the directory must be made executable.

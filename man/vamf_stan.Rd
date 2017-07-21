@@ -2,8 +2,7 @@
 % Please edit documentation in R/vamf.R
 \name{vamf_stan}
 \alias{vamf_stan}
-\title{Varying-Censoring Aware Matrix Factorization via Stan.
-Runs VAMF with many random initializations in parallel. Parallelism will only work if the number of cores is set as a global option. For example \code{options(mc.cores=4)}. Discards any random restarts that resulted in Stan errors, usually due to numeric convergence failures.}
+\title{Varying-Censoring Aware Matrix Factorization via Stan.}
 \usage{
 vamf_stan(ss, svmult = rep.int(1, 4), output_samples = 100)
 }
@@ -18,6 +17,5 @@ vamf_stan(ss, svmult = rep.int(1, 4), output_samples = 100)
 List of results from each random initialization excluding numerical convergence failures. Each element of the list is an object with structure described in \code{\link{vb_wrap}}.
 }
 \description{
-Varying-Censoring Aware Matrix Factorization via Stan.
 Runs VAMF with many random initializations in parallel. Parallelism will only work if the number of cores is set as a global option. For example \code{options(mc.cores=4)}. Discards any random restarts that resulted in Stan errors, usually due to numeric convergence failures.
 }

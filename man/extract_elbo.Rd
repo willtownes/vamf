@@ -2,8 +2,7 @@
 % Please edit documentation in R/vamf.R
 \name{extract_elbo}
 \alias{extract_elbo}
-\title{Extract evidence lower bound (ELBO).
-Takes the log text from running variational Bayes in Stan and extracts out the value of the evidence lower bound (ELBO) at the final iteration. Higher ELBO is better.}
+\title{Extract evidence lower bound (ELBO).}
 \usage{
 extract_elbo(logtxt)
 }
@@ -14,6 +13,5 @@ extract_elbo(logtxt)
 The scalar value of the ELBO.
 }
 \description{
-Extract evidence lower bound (ELBO).
 Takes the log text from running variational Bayes in Stan and extracts out the value of the evidence lower bound (ELBO) at the final iteration. Higher ELBO is better.
 }

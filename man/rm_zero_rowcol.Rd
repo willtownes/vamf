@@ -2,8 +2,7 @@
 % Please edit documentation in R/vamf.R
 \name{rm_zero_rowcol}
 \alias{rm_zero_rowcol}
-\title{Remove zero rows and columns.
-Removes all rows and columns that have only zeros from a sparse Matrix}
+\title{Remove zero rows and columns.}
 \usage{
 rm_zero_rowcol(Y)
 }
@@ -14,6 +13,5 @@ rm_zero_rowcol(Y)
 The same Matrix without zero rows and columns
 }
 \description{
-Remove zero rows and columns.
-Removes all rows and columns that have only zeros from a sparse Matrix
+Removes all rows and columns that have only zeros from a sparse Matrix.
 }

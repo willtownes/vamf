@@ -2,8 +2,7 @@
 % Please edit documentation in R/vamf.R
 \name{init_ss}
 \alias{init_ss}
-\title{Initialize sufficient statistics.
-Calculate and cache in a list various sufficient statistics of the data used by the VAMF algorithm.}
+\title{Initialize sufficient statistics.}
 \usage{
 init_ss(Y, L, log2trans = TRUE, pseudocount = 0, b1_range = c(0.3, 0.7))
 }
@@ -12,16 +11,15 @@ init_ss(Y, L, log2trans = TRUE, pseudocount = 0, b1_range = c(0.3, 0.7))
 
 \item{L}{desired latent dimension (upper bound)}
 
+\item{log2trans}{should nonzero values of Y be converted to log-scale?}
+
 \item{pseudocount}{small offset for log transformation. Transformation is g(y)=log2(pseudocount+y) for all nonzero y values}
 
 \item{b1_range}{rough guess of typical slopes for the dropout mechanism}
-
-\item{log2_trans}{should nonzero values of Y be converted to log-scale?}
 }
 \value{
 a list of sufficient statistics used by other vamf functions
 }
 \description{
-Initialize sufficient statistics.
 Calculate and cache in a list various sufficient statistics of the data used by the VAMF algorithm.
 }

@@ -2,10 +2,7 @@
 % Please edit documentation in R/vamf.R
 \name{effective_dimension}
 \alias{effective_dimension}
-\title{Effective dimension.
-Finds the effective dimension of a latent factor matrix by first computing L2 norms of each column.
-Columns with L2 norm greater than the maximum norm times 'thresh' are nonzero.
-Columns with L2 norm less than the cutoff (above) are 'zero'.}
+\title{Effective dimension.}
 \usage{
 effective_dimension(x, thresh = 0.05)
 }
@@ -18,8 +15,9 @@ effective_dimension(x, thresh = 0.05)
 a count of the number of nonzero columns
 }
 \description{
-Effective dimension.
 Finds the effective dimension of a latent factor matrix by first computing L2 norms of each column.
+}
+\details{
 Columns with L2 norm greater than the maximum norm times 'thresh' are nonzero.
 Columns with L2 norm less than the cutoff (above) are 'zero'.
 }

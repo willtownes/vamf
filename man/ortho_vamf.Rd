@@ -2,8 +2,7 @@
 % Please edit documentation in R/vamf.R
 \name{ortho_vamf}
 \alias{ortho_vamf}
-\title{Orthogonalize and normalize latent factors.
-Rotate and transform the latent factors to an equivalent representation that facilitates interpretability by using an orthonormal basis in the loading matrix.}
+\title{Orthogonalize and normalize latent factors.}
 \usage{
 ortho_vamf(vars)
 }
@@ -14,6 +13,5 @@ ortho_vamf(vars)
 The same list but with additional components 'factors' and 'loadings' whose interpretation is analogous to Principal Components Analysis.
 }
 \description{
-Orthogonalize and normalize latent factors.
 Rotate and transform the latent factors to an equivalent representation that facilitates interpretability by using an orthonormal basis in the loading matrix.
 }

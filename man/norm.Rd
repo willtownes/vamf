@@ -2,8 +2,7 @@
 % Please edit documentation in R/vamf.R
 \name{norm}
 \alias{norm}
-\title{L2 norm of an object.
-L2 norm of an object.}
+\title{L2 norm of an object.}
 \usage{
 norm(v)
 }
@@ -14,6 +13,5 @@ norm(v)
 The L2 (Euclidean) norm of v
 }
 \description{
-L2 norm of an object.
 L2 norm of an object.
 }

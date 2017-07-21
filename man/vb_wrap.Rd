@@ -2,8 +2,7 @@
 % Please edit documentation in R/vamf.R
 \name{vb_wrap}
 \alias{vb_wrap}
-\title{Variational Bayes wrapper function.
-Convenience function for parallelizing calls to VB.}
+\title{Variational Bayes wrapper function.}
 \usage{
 vb_wrap(svmult, stmod, ss, resnames, output_samples)
 }
@@ -22,6 +21,5 @@ vb_wrap(svmult, stmod, ss, resnames, output_samples)
 A list with components stan_vb_fit (the result from Stan) and logtxt (the log of Stan output).
 }
 \description{
-Variational Bayes wrapper function.
 Convenience function for parallelizing calls to VB.
 }

@@ -4,7 +4,9 @@
 NULL
 
 #' Remove zero rows and columns.
-#' Removes all rows and columns that have only zeros from a sparse Matrix
+#' 
+#' Removes all rows and columns that have only zeros from a sparse Matrix.
+#' 
 #' @param Y A sparse Matrix
 #' @return The same Matrix without zero rows and columns
 rm_zero_rowcol<-function(Y){
@@ -17,12 +19,15 @@ rm_zero_rowcol<-function(Y){
 #STMOD<-stan_model("vamf.stan")
 
 #' L2 norm of an object.
+#' 
 #' L2 norm of an object.
+#' 
 #' @param v An vector or array-like object
 #' @return The L2 (Euclidean) norm of v
 norm<-function(v){sqrt(sum(v^2))}
 
 #' L2 norms of columns of a matrix.
+#' 
 #' L2 norms of columns of a matrix.
 #' @param x a matrix
 #' @return a vector containing the L2 norms of the columns of x.
@@ -31,7 +36,9 @@ colNorms<-function(x){
 }
 
 #' Effective dimension.
+#' 
 #' Finds the effective dimension of a latent factor matrix by first computing L2 norms of each column.
+#' 
 #' Columns with L2 norm greater than the maximum norm times 'thresh' are nonzero.
 #' Columns with L2 norm less than the cutoff (above) are 'zero'.
 #' @param x a matrix whose columns represent coordinates in a latent space
@@ -43,7 +50,9 @@ effective_dimension<-function(x,thresh=.05){
 }
 
 #' Initialize sufficient statistics.
+#' 
 #' Calculate and cache in a list various sufficient statistics of the data used by the VAMF algorithm.
+#' 
 #' @param Y a data matrix, typically non-negative values such as counts or TPM
 #' @param L desired latent dimension (upper bound)
 #' @param log2trans should nonzero values of Y be converted to log-scale?
@@ -83,7 +92,9 @@ init_ss<-function(Y,L,log2trans=TRUE,pseudocount=0.0,b1_range=c(0.3,.7)){
 }
 
 #' Variational Bayes wrapper function.
+#' 
 #' Convenience function for parallelizing calls to VB.
+#' 
 #' @param svmult Scalar multiplier to increase or decrease the sigma_v scale hyperparameter.
 #' @param stmod An object of class \code{\linkS4class{stanmodel}}.
 #' @param ss A list of sufficient statistics from \code{\link{init_ss}}.
@@ -98,7 +109,9 @@ vb_wrap<-function(svmult,stmod,ss,resnames,output_samples){
 }
 
 #' Varying-Censoring Aware Matrix Factorization via Stan.
+#' 
 #' Runs VAMF with many random initializations in parallel. Parallelism will only work if the number of cores is set as a global option. For example \code{options(mc.cores=4)}. Discards any random restarts that resulted in Stan errors, usually due to numeric convergence failures.
+#' 
 #' @param ss A list of sufficient statistics from \code{\link{init_ss}}.
 #' @param svmult Vector of multipliers to increase or decrease the sigma_v scale hyperparameter. Length of svmult determines number of random restarts to run.
 #' @param output_samples How many samples from the approximate posterior to estimate the posterior mean of each parameter.
@@ -112,6 +125,7 @@ vamf_stan<-function(ss, svmult=rep.int(1.0,4), output_samples=100){
 }
 
 #' Extract evidence lower bound (ELBO).
+#' 
 #' Takes the log text from running variational Bayes in Stan and extracts out the value of the evidence lower bound (ELBO) at the final iteration. Higher ELBO is better.
 #' @param logtxt A list of strings. Each element is a single line of the output log text of a Stan run.
 #' @return The scalar value of the ELBO.
@@ -135,6 +149,7 @@ extract_elbo<-function(logtxt){
 }
 
 #' Extract latent factors from a Stan model fit.
+#' 
 #' Extracts out the posterior means of the latent factors and all other parameter values from a Stan model fit.
 #' @param stan_vb_fit Stan variational Bayes object obtained from the output of \code{\link{vb_wrap}}.
 #' @param ss List of sufficient statistics from \code{\link{init_ss}}.
@@ -155,6 +170,7 @@ extract_factors<-function(stan_vb_fit,ss){
 }
 
 #' Orthogonalize and normalize latent factors.
+#' 
 #' Rotate and transform the latent factors to an equivalent representation that facilitates interpretability by using an orthonormal basis in the loading matrix.
 #' @param vars List of posterior means of model parameters from \code{\link{extract_factors}}.
 #' @return The same list but with additional components 'factors' and 'loadings' whose interpretation is analogous to Principal Components Analysis.
@@ -175,7 +191,8 @@ ortho_extract<-function(stfit,ss){
   ortho_vamf(extract_factors(stfit$stan_vb_fit,ss))
 }
 
-#' Varying-Censoring Aware Matrix Factorization
+#' Varying-Censoring Aware Matrix Factorization.
+#' 
 #' VAMF is a probabilistic dimension reduction method intended for single cell RNA-Seq datasets.
 #' @param Y Sparse Matrix of gene expression measurements, with genetic features (genes) in the rows and samples (typically, individual cells) in the columns.
 #' @param L Upper bound on the dimensionality of the latent space to be learned. Automatic relevance determination is used to shrink away unnecessary dimensions.
