@@ -1,12 +1,15 @@
 Package: vamf
 Type: Package
-Title: What the package does (short line)
+Title: Varying-Censoring Aware Matrix Factorization
 Version: 1.0
 Date: 2017-07-17
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Will Townes
+Maintainer: Will Townes <will.townes@gmail.com>
+Description: Probabilistic dimension reduction for single cell RNA-Seq data.
+    Uses Stan for variational inference.
+URL: https://github.com/willtownes/vamf
+BugReports: https://github.com/willtownes/vamf/issues
+License: GPL-3
 Depends: R (>= 3.0.2), Rcpp (>= 0.12.11), methods
 Imports: rstan (>= 2.15.1), rstantools (>= 1.2.0)
 Suggests:
