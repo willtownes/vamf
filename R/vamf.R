@@ -17,6 +17,7 @@ rm_zero_rowcol<-function(Y){
 }
 
 #STMOD<-stan_model("vamf.stan")
+STMOD<-stanmodels[["vamf"]]
 
 #' L2 norm of an object.
 #' 
@@ -119,7 +120,7 @@ vb_wrap<-function(svmult,stmod,ss,resnames,output_samples){
 vamf_stan<-function(ss, svmult=rep.int(1.0,4), output_samples=100){
   resnames<-c("U","w","sy","y0","V","sv","b0","b1")
   #variational bayes
-  res<-parallel::mclapply(svmult,vb_wrap,stan_models[["vamf"]],ss,resnames,output_samples)
+  res<-parallel::mclapply(svmult,vb_wrap,STMOD,ss,resnames,output_samples)
   #get rid of model runs that resulted in errors
   return(Filter(function(x){class(x)!="try-error"},res))
 }
