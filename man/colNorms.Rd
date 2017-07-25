@@ -2,8 +2,7 @@
 % Please edit documentation in R/vamf.R
 \name{colNorms}
 \alias{colNorms}
-\title{L2 norms of columns of a matrix.
-L2 norms of columns of a matrix.}
+\title{L2 norms of columns of a matrix.}
 \usage{
 colNorms(x)
 }
@@ -14,6 +13,5 @@ colNorms(x)
 a vector containing the L2 norms of the columns of x.
 }
 \description{
-L2 norms of columns of a matrix.
 L2 norms of columns of a matrix.
 }

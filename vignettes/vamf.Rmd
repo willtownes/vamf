@@ -12,7 +12,7 @@ vignette: >
 ## Setup
 
 ```{r}
-options(mc.cores=4)
+options(mc.cores=2)
 library(ggplot2)
 source("sims.R") #functions for doing simulations
 source("existing.R") #PCA, tSNE, MDS wrapper functions
@@ -51,7 +51,7 @@ visualize original latent space ("ground truth")
 
 ```{r}
 cens_rates_obs<-Matrix::colMeans(Y_obs==0)
-ggplot(dat[["Truth"]],aes(x=dim1,y=dim2,colour=batch,shape=batch))+geom_point(size=3)+theme_classic()+ggtitle("Original Latent Space")+labs(x="Dimension 1",y="Dimension 2")
+ggplot(dat[["Truth"]],aes(x=dim1,y=dim2,colour=batch,shape=batch))+geom_point(size=3)+theme_classic()+ggtitle("Original Latent Space")+labs(x="Dimension 1",y="Dimension 2")+theme(legend.position="top")
 ```
 
 ### Standard Dimension Reduction Methods
@@ -93,7 +93,7 @@ plt_noise(factors,batch)+ggtitle("Manhattan MDS")
 This is our algorithm.
 
 ```{r, fig.show='hold'}
-res<-vamf::vamf(Y_obs,10,log2trans=FALSE)
+res<-vamf::vamf(Y_obs,10,nrestarts=2,log2trans=FALSE)
 #batch<-rep(c("high detection","low detection"),each=80)
 plt_noise(res$factors,batch)+ggtitle("VAMF")
 barplot(colNorms(res$factors),xlab="Dimension",ylab="L2 norm", main="Dimension Learning")
@@ -147,7 +147,7 @@ plt_clst(factors,ref)+ggtitle("Manhattan MDS")
 ### Variable-censoring Aware Matrix Factorization
 
 ```{r, fig.show='hold'}
-res<-vamf::vamf(Y_obs,10,log2trans=FALSE)
+res<-vamf::vamf(Y_obs,10,nrestarts=2,log2trans=FALSE)
 
 plt_clst(res$factors[,1:2],ref)+ggtitle("VAMF")
 barplot(colNorms(res$factors),xlab="Dimension",ylab="L2 norm", main="Dimension Learning")

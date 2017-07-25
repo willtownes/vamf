@@ -1,7 +1,7 @@
 Package: vamf
 Type: Package
 Title: Varying-Censoring Aware Matrix Factorization
-Version: 1.0
+Version: 0.99.0
 Date: 2017-07-17
 Author: Will Townes
 Maintainer: Will Townes <will.townes@gmail.com>
@@ -10,7 +10,7 @@ Description: Probabilistic dimension reduction for single cell RNA-Seq data.
 URL: https://github.com/willtownes/vamf
 BugReports: https://github.com/willtownes/vamf/issues
 License: GPL-3
-Depends: R (>= 3.0.2), Rcpp (>= 0.12.11), methods
+Depends: R (>= 3.4), Rcpp (>= 0.12.11), methods
 Imports: rstan (>= 2.15.1), 
   rstantools (>= 1.2.0),
   Matrix (>= 1.2-10),
@@ -21,8 +21,15 @@ Imports: rstan (>= 2.15.1),
 LinkingTo: StanHeaders (>= 2.15.0.1), rstan (>= 2.15.1), BH (>= 1.62.0.1), Rcpp (>= 0.12.11), RcppEigen (>= 0.3.3.3.0)
 RoxygenNote: 6.0.1
 Suggests: knitr,
-    rmarkdown,
-    Rtsne,
-    MASS,
-    ggplot2
+  rmarkdown,
+  Rtsne,
+  MASS,
+  ggplot2
 VignetteBuilder: knitr
+biocViews: DimensionReduction, 
+  GeneExpression, 
+  RNASeq, 
+  Sequencing, 
+  SingleCell, 
+  Software, 
+  Transcriptomics
