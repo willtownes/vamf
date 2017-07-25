@@ -9,50 +9,146 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+## Setup
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+```{r}
+options(mc.cores=4)
+library(ggplot2)
+source("sims.R") #functions for doing simulations
+source("existing.R") #PCA, tSNE, MDS wrapper functions
+```
 
-## Vignette Info
+Misc. functions used elsewhere
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+```{r}
+plt_noise<-function(factors,batch){
+  #create ggplot object
+  #batch should be same length as ncol(factors)
+  ggplot(factors,aes(x=dim1,y=dim2,colour=batch,shape=batch))+geom_point(size=3)+theme_classic()+labs(x="Dimension 1",y="Dimension 2")+theme(legend.position = "top")
+}
+plt_clst<-function(factors,ref){
+  #ref is a data frame with "batch" and "id" variables
+  ggplot(cbind(factors,ref),aes(x=dim1,y=dim2,colour=id,shape=batch))+geom_point(size=3)+theme_classic()+labs(x="Dimension 1",y="Dimension 2")+theme(legend.position = "top")
+}
+plx2name<-function(plx){paste0("tSNE_plx_",plx)}
+logit<-function(p){log(p)-log(1-p)}
+```
 
-## Styles
+## Scenario I- Noise Only
 
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+Generate data that is just random noise, but allow two batches with different informative dropout rates. Expect traditional methods to detect two clusters but VAMF to find nothing of interest. The missingness rate will be roughly 60%.
 
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
+```{r}
+set.seed(101)
+sim1<-noise_only(160,500,50) #N,G,Gsignal
+dat<-list(Truth=sim1$ref[,c("dim1","dim2")])
+batch<-sim1$ref$batch
+Y_obs<-sim1$Y_obs
+(cens<-signif(sum(Y_obs==0)/prod(dim(Y_obs)),3)) #missingness rate
+```
 
-## Figures
+visualize original latent space ("ground truth")
 
-The figure sizes have been customised so that you can easily put two images side-by-side. 
+```{r}
+cens_rates_obs<-Matrix::colMeans(Y_obs==0)
+ggplot(dat[["Truth"]],aes(x=dim1,y=dim2,colour=batch,shape=batch))+geom_point(size=3)+theme_classic()+ggtitle("Original Latent Space")+labs(x="Dimension 1",y="Dimension 2")
+```
+
+### Standard Dimension Reduction Methods
+
+t-distributed Stochastic Neighbor Embedding with perplexities of 20 and 5
 
 ```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+### tSNE
+pplx<-20
+factors<-tsne(Y_obs,2,perplexity=pplx)
+plt_noise(factors,batch)+ggtitle(paste0("tSNE (plx ",pplx,")"))
+
+pplx<-5
+factors<-tsne(Y_obs,2,perplexity=pplx)
+plt_noise(factors,batch)+ggtitle(paste0("tSNE (plx ",pplx,")"))
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+Principal Components Analysis
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
+```{r, fig.show='hold'}
+### PCA
+factors<-pca(Y_obs,2)
+factors$detection_rate<-1-cens_rates_obs
+ggplot(factors,aes(x=detection_rate,y=dim1,color=batch,shape=batch))+geom_point(size=3)+theme_classic()+ggtitle("PC1 vs detection rates")+labs(x="Detection Rate",y="Dimension 1")+theme(legend.position="top")
 
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+plt_noise(factors,batch)+ggtitle("PCA")
 ```
 
-Also a quote using `>`:
+Multidimensional Scaling gives a similar result to PCA even with Manhattan distance metric.
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+```{r}
+### Multidimensional Scaling
+factors<-mds(Y_obs,2,distance="manhattan")
+plt_noise(factors,batch)+ggtitle("Manhattan MDS")
+```
+
+### Varying-censoring Aware Matrix Factorization
+
+This is our algorithm.
+
+```{r, fig.show='hold'}
+res<-vamf::vamf(Y_obs,10,log2trans=FALSE)
+#batch<-rep(c("high detection","low detection"),each=80)
+plt_noise(res$factors,batch)+ggtitle("VAMF")
+barplot(colNorms(res$factors),xlab="Dimension",ylab="L2 norm", main="Dimension Learning")
+```
+
+## Scenario II- Latent Clusters
+
+Generate simulated data where there are four true 'biological' clusters. Censoring rate shown below.
+
+```{r}
+set.seed(101)
+sim2<-latent_clusters(160,500,50)
+dat<-list(Truth=sim2$ref[,c("dim1","dim2")])
+ref<-sim2$ref[,c("id","batch")]
+Y_obs<-sim2$Y_obs
+cens_rates<-sim2$ref$cens_rates
+cens_rates_obs<-Matrix::colMeans(Y_obs==0)
+(cens<-signif(Matrix::mean(Y_obs==0),3)) #missingness rate
+
+plt_clst(dat[["Truth"]],ref)+ggtitle("Original Latent Space")
+```
+
+### Standard Dimension Reduction Methods
+
+```{r, fig.show='hold'}
+### tSNE
+pplx<-20
+factors<-tsne(Y_obs,2,perplexity=pplx)
+plt_clst(factors,ref)+ggtitle(paste0("tSNE (plx ",pplx,")"))
+
+pplx<-5
+factors<-tsne(Y_obs,2,perplexity=pplx)
+plt_clst(factors,ref)+ggtitle(paste0("tSNE (plx ",pplx,")"))
+```
+
+```{r, fig.show='hold'}
+### PCA
+factors<-pca(Y_obs,2)
+factors$detection_rate<-1-cens_rates_obs
+ggplot(cbind(factors,ref),aes(x=detection_rate,y=dim1,color=id,shape=batch))+geom_point(size=3)+theme_classic()+ggtitle("PC1 correlates with cell-specific detection")+labs(x="Detection Rate",y="Dimension 1")+theme(legend.position="top")
+
+plt_clst(factors,ref)+ggtitle("PCA")
+```
+
+```{r}
+### Multidimensional Scaling
+factors<-mds(Y_obs,2,distance="manhattan")
+plt_clst(factors,ref)+ggtitle("Manhattan MDS")
+```
+
+### Variable-censoring Aware Matrix Factorization
+
+```{r, fig.show='hold'}
+res<-vamf::vamf(Y_obs,10,log2trans=FALSE)
+
+plt_clst(res$factors[,1:2],ref)+ggtitle("VAMF")
+barplot(colNorms(res$factors),xlab="Dimension",ylab="L2 norm", main="Dimension Learning")
+```

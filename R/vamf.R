@@ -86,7 +86,7 @@ init_ss<-function(Y,L,log2trans=TRUE,pseudocount=0.0,b1_range=c(0.3,.7)){
   sd_rows<-apply(Yctr,1,function(x){stats::mad(x[x>0])})
   ss$sv<-mean(sd_rows[!is.na(sd_rows)])
   ### end inefficient block
-  ss$Q<-colMeans(Z) #detection rates
+  ss$Q<-Matrix::colMeans(Z) #detection rates
   ss$b1_mn<-mean(b1_range)
   ss$b1_sd<-diff(b1_range)/4 #ie, range is +/- 2 standard devs from mean
   ss
