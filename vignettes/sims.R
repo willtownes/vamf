@@ -5,7 +5,6 @@
 # This file a slight modification of https://github.com/willtownes/vamf-paper/blob/master/simulations/sims.R
 
 library(Matrix)
-#library(caret)
 
 rm_zero_rowcol<-function(Y){
   #remove all rows and columns containing all zeros
