@@ -204,7 +204,7 @@ ortho_extract<-function(stfit,ss){
 #' @param svmult Scalar or vector of multipliers to increase or decrease the sigma_v scale hyperparameter.
 #' @return List of posterior means of all model parameters. The 'factors' and 'loadings' are analogous to PCA. Cell positions in latent space can be plotted by using the 'factors' matrix.
 #' @export
-#' @example examples/vamf_examples.R
+#' @example inst/examples/vamf_examples.R
 vamf<-function(Y, L, nrestarts=4, log2trans=TRUE, pseudocount=0.0, output_samples=100, save_restarts=FALSE,svmult=1){
   #convenience wrapper for running instances of selection factorization
   ss<-init_ss(Y,L,log2trans=log2trans,pseudocount=pseudocount)

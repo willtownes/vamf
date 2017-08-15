@@ -1,4 +1,4 @@
-N<-50; G<-100; Gsignal<-20; Gnoise<-G-Gsignal
+N<-20; G<-60; Gsignal<-20; Gnoise<-G-Gsignal
 theta<-seq(from=0,to=2*pi,length.out=N)
 true_cell_positions<-data.frame(dim1=3*cos(theta),dim2=3*sin(theta))
 with(true_cell_positions,plot(dim1,dim2))
