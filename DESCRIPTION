@@ -24,7 +24,8 @@ Suggests: knitr,
   rmarkdown,
   Rtsne,
   MASS,
-  ggplot2
+  ggplot2,
+    testthat
 VignetteBuilder: knitr
 biocViews: DimensionReduction, 
   GeneExpression, 
