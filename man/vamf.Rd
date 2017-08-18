@@ -8,7 +8,7 @@ vamf(Y, L, nrestarts = 4, log2trans = TRUE, pseudocount = 0,
   output_samples = 100, save_restarts = FALSE, svmult = 1)
 }
 \arguments{
-\item{Y}{Sparse Matrix of gene expression measurements, with genetic features (genes) in the rows and samples (typically, individual cells) in the columns.}
+\item{Y}{Sparse Matrix of gene expression measurements, with G genetic features (genes) in the rows and N samples (typically, individual cells) in the columns.}
 
 \item{L}{Upper bound on the dimensionality of the latent space to be learned. Automatic relevance determination is used to shrink away unnecessary dimensions.}
 
@@ -25,8 +25,38 @@ vamf(Y, L, nrestarts = 4, log2trans = TRUE, pseudocount = 0,
 \item{svmult}{Scalar or vector of multipliers to increase or decrease the sigma_v scale hyperparameter.}
 }
 \value{
-List of posterior means of all model parameters. The 'factors' and 'loadings' are analogous to PCA. Cell positions in latent space can be plotted by using the 'factors' matrix.
+Named list of posterior means for model parameters. The 'factors' and 'loadings' are analogous to PCA. Cell positions in latent space can be plotted by using the 'factors' matrix. If save_restarts is set to TRUE, returns a list of lists, each from a separate VAMF run.
+\describe{
+  \item{factors}{LxN matrix whose rows are analogous to principle components. The L2 norm of each row indicates the significance level of the component.}
+  \item{loadings}{LxG matrix whose rows are analogous to principle component loadings. The rows are orthonormal.}
+  \item{effdim}{Effective dimensionality of the latent space. Computed by L2 norms of the 'factors' matrix}
+  \item{elbo}{Evidence lower bound, the objective function for variational inference. See \href{http://mc-stan.org/users/documentation/index.html}{Stan user manual}}
+  \item{b0}{Censoring mechanism random intercepts for each cell (vector of length N)}
+  \item{b1}{Censoring mechanism random slopes for each cell (vector of length N)}
+  \item{U}{Raw version of the factors matrix (without rotations and scaling)}
+  \item{V}{Raw version of loadings matrix (without rotations and scaling)}
+  \item{w}{Vector of length G with row-specific random intercepts}
+  \item{y0}{Global intercept (scalar)}
+  \item{sy}{Standard deviation of global noise (scalar)}
+  \item{sv}{Standard deviations of each latent dimension (vector of length L), interpretable only with U and V, not interpretable with 'factors' and 'loadings'}
+  \item{svmult}{Same as the input parameter(s)}
+}
 }
 \description{
 VAMF is a probabilistic dimension reduction method intended for single cell RNA-Seq datasets.
+}
+\examples{
+set.seed(100); N<-20; G<-60; Gsignal<-20; Gnoise<-G-Gsignal
+theta<-seq(from=0,to=2*pi,length.out=N)
+true_cell_positions<-data.frame(dim1=5*cos(theta),dim2=5*sin(theta))
+with(true_cell_positions,plot(dim1,dim2))
+informative_rows<-as.matrix(true_cell_positions)\%*\%matrix(2*rnorm(Gsignal*2),nrow=2)
+noise_rows<-matrix(.5*rnorm(Gnoise*N),nrow=Gnoise)
+Y<-rbind(t(informative_rows),noise_rows)+rnorm(G)+10
+Z<-matrix(rbinom(G*N,1,.8),nrow=G)
+Y<-Y*Z
+pca_factors<-prcomp(t(Y),center=TRUE,scale=TRUE)$x
+plot(pca_factors[,1:2])
+vamf_factors<-vamf(Y,5,nrestarts=2,log2trans=FALSE)$factors
+with(vamf_factors,plot(dim1,dim2))
 }

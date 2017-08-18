@@ -194,7 +194,7 @@ ortho_extract<-function(stfit,ss){
 #' Varying-Censoring Aware Matrix Factorization.
 #' 
 #' VAMF is a probabilistic dimension reduction method intended for single cell RNA-Seq datasets.
-#' @param Y Sparse Matrix of gene expression measurements, with genetic features (genes) in the rows and samples (typically, individual cells) in the columns.
+#' @param Y Sparse Matrix of gene expression measurements, with G genetic features (genes) in the rows and N samples (typically, individual cells) in the columns.
 #' @param L Upper bound on the dimensionality of the latent space to be learned. Automatic relevance determination is used to shrink away unnecessary dimensions.
 #' @param nrestarts Number of independent random initializations of the algorithm. Can be parallelized by setting e.g. \code{options(mc.cores=4)}.
 #' @param log2trans Should the data be log transformed prior to analysis? Set to FALSE if the data have already been log transformed.
@@ -202,14 +202,30 @@ ortho_extract<-function(stfit,ss){
 #' @param output_samples Number of samples from approximate posterior used to estimate the posterior means of all parameters.
 #' @param save_restarts If multiple initializations are used, set this to TRUE if you want to return the list of all results. Set to FALSE to choose only the best result based on the highest evidence lower bound (ELBO).
 #' @param svmult Scalar or vector of multipliers to increase or decrease the sigma_v scale hyperparameter.
-#' @return List of posterior means of all model parameters. The 'factors' and 'loadings' are analogous to PCA. Cell positions in latent space can be plotted by using the 'factors' matrix.
+#' @return Named list of posterior means for model parameters. The 'factors' and 'loadings' are analogous to PCA. Cell positions in latent space can be plotted by using the 'factors' matrix. If save_restarts is set to TRUE, returns a list of lists, each from a separate VAMF run.
+#' \describe{
+#'   \item{factors}{LxN matrix whose rows are analogous to principle components. The L2 norm of each row indicates the significance level of the component.}
+#'   \item{loadings}{LxG matrix whose rows are analogous to principle component loadings. The rows are orthonormal.}
+#'   \item{effdim}{Effective dimensionality of the latent space. Computed by L2 norms of the 'factors' matrix}
+#'   \item{elbo}{Evidence lower bound, the objective function for variational inference. See \href{http://mc-stan.org/users/documentation/index.html}{Stan user manual}}
+#'   \item{b0}{Censoring mechanism random intercepts for each cell (vector of length N)}
+#'   \item{b1}{Censoring mechanism random slopes for each cell (vector of length N)}
+#'   \item{U}{Raw version of the factors matrix (without rotations and scaling)}
+#'   \item{V}{Raw version of loadings matrix (without rotations and scaling)}
+#'   \item{w}{Vector of length G with row-specific random intercepts}
+#'   \item{y0}{Global intercept (scalar)}
+#'   \item{sy}{Standard deviation of global noise (scalar)}
+#'   \item{sv}{Standard deviations of each latent dimension (vector of length L), interpretable only with U and V, not interpretable with 'factors' and 'loadings'}
+#'   \item{svmult}{Same as the input parameter(s)}
+#' }
 #' @export
-#' @example N<-20; G<-60; Gsignal<-20; Gnoise<-G-Gsignal
+#' @examples
+#' set.seed(100); N<-20; G<-60; Gsignal<-20; Gnoise<-G-Gsignal
 #' theta<-seq(from=0,to=2*pi,length.out=N)
-#' true_cell_positions<-data.frame(dim1=3*cos(theta),dim2=3*sin(theta))
+#' true_cell_positions<-data.frame(dim1=5*cos(theta),dim2=5*sin(theta))
 #' with(true_cell_positions,plot(dim1,dim2))
-#' informative_rows<-as.matrix(true_cell_positions)%*%matrix(rnorm(Gsignal*2),nrow=2)
-#' noise_rows<-matrix(rnorm(Gnoise*N),nrow=Gnoise)
+#' informative_rows<-as.matrix(true_cell_positions)%*%matrix(2*rnorm(Gsignal*2),nrow=2)
+#' noise_rows<-matrix(.5*rnorm(Gnoise*N),nrow=Gnoise)
 #' Y<-rbind(t(informative_rows),noise_rows)+rnorm(G)+10
 #' Z<-matrix(rbinom(G*N,1,.8),nrow=G)
 #' Y<-Y*Z
