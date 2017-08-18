@@ -31,6 +31,7 @@ norm<-function(v){sqrt(sum(v^2))}
 #' L2 norms of columns of a matrix.
 #' @param x a matrix
 #' @return a vector containing the L2 norms of the columns of x.
+#' @export
 colNorms<-function(x){
   apply(x,2,norm)
 }
@@ -204,14 +205,14 @@ ortho_extract<-function(stfit,ss){
 #' @param svmult Scalar or vector of multipliers to increase or decrease the sigma_v scale hyperparameter.
 #' @return Named list of posterior means for model parameters. The 'factors' and 'loadings' are analogous to PCA. Cell positions in latent space can be plotted by using the 'factors' matrix. If save_restarts is set to TRUE, returns a list of lists, each from a separate VAMF run.
 #' \describe{
-#'   \item{factors}{LxN matrix whose rows are analogous to principle components. The L2 norm of each row indicates the significance level of the component.}
+#'   \item{factors}{NxL matrix whose columns are analogous to principle components. The L2 norm of each column indicates the significance level of the component. The transposed orientation is to facilitate plotting.}
 #'   \item{loadings}{LxG matrix whose rows are analogous to principle component loadings. The rows are orthonormal.}
 #'   \item{effdim}{Effective dimensionality of the latent space. Computed by L2 norms of the 'factors' matrix}
 #'   \item{elbo}{Evidence lower bound, the objective function for variational inference. See \href{http://mc-stan.org/users/documentation/index.html}{Stan user manual}}
 #'   \item{b0}{Censoring mechanism random intercepts for each cell (vector of length N)}
 #'   \item{b1}{Censoring mechanism random slopes for each cell (vector of length N)}
-#'   \item{U}{Raw version of the factors matrix (without rotations and scaling)}
-#'   \item{V}{Raw version of loadings matrix (without rotations and scaling)}
+#'   \item{U}{Raw version of the factors matrix (without rotations and scaling) dimension LxN. Note the factors matrix has a transposed orientation relative to U}
+#'   \item{V}{Raw version of loadings matrix (without rotations and scaling) dimension LxG}
 #'   \item{w}{Vector of length G with row-specific random intercepts}
 #'   \item{y0}{Global intercept (scalar)}
 #'   \item{sy}{Standard deviation of global noise (scalar)}
