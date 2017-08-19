@@ -179,10 +179,10 @@ ortho_vamf<-function(vars){
   v<-vars$V #LxG
   u<-vars$U #LxN, recycles the sv vector
   svd_v<-svd(v)
-  A<-svd_v$u #LxL?
-  D<-if(length(svd_v$d)>1) diag(svd_v$d) else svd_v$d #LxL?
-  Q<-svd_v$v #GxL?
-  loadings<-t(Q) #LxG?
+  A<-svd_v$u #LxL
+  D<-if(length(svd_v$d)>1) diag(svd_v$d) else svd_v$d #LxL
+  Q<-svd_v$v #GxL
+  loadings<-t(Q) #LxG
   factors<-data.frame(crossprod(u,A%*%D))
   colnames(factors)<-paste0("dim",1:ncol(factors))
   c(vars,mget(c("factors","loadings")))
